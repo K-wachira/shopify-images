@@ -124,7 +124,7 @@ class _ImageItemState extends State<ImageItem> {
       ),
     );
   }
-  
+
 }
 
 // TODO classic how classes work

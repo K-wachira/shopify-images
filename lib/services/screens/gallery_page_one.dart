@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shopify_image/services/screens/image_item.dart';
 import 'package:shopify_image/services/screens/pop_up_menu.dart';
@@ -86,6 +87,58 @@ class _GalleryPageOneState extends State<GalleryPageOne> {
   }
 
 
+  Widget my_pop_up(){
+    return PopupMenuButton(
+        onSelected: (value) {
+          Fluttertoast.showToast(
+              msg: "You have selected " + value.toString(),
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.black,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+        },
+        itemBuilder: (context) => [
+          PopupMenuItem(
+              value: 1,
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+                    child: Icon(Icons.print),
+                  ),
+                  Text('Print')
+                ],
+              )),
+          PopupMenuItem(
+              value: 2,
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+                    child: Icon(Icons.share),
+                  ),
+                  Text('Share')
+                ],
+              )),
+          PopupMenuItem(
+              value: 3,
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+                    child: Icon(Icons.add_circle),
+                  ),
+                  Text('Add')
+                ],
+              )),
+        ]);
+  }
+
+
+
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -111,7 +164,7 @@ class _GalleryPageOneState extends State<GalleryPageOne> {
                 icon: Icon(Icons.more_vert),
                 onPressed: () => showDialog(
                   context: context,
-                  builder: (context) => pop_up_menu(),
+                  builder: (context) => MorePopUpMenu(),
                 ),
               )
             ],
