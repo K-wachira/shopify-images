@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shopify_image/services/screens/test.dart';
+import 'package:shopify_image/services/screens/gallery_page_one.dart';
 
 
 class Home extends StatefulWidget {

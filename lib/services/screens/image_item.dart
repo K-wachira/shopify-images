@@ -9,9 +9,8 @@ import 'package:flutter/widgets.dart';
 
 class ImageItem extends StatefulWidget {
   final String image;
-  final String imagetag;
 
-  ImageItem({Key key, this.image, this.imagetag}) : super(key: key);
+  ImageItem({Key key, this.image, }) : super(key: key);
   @override
   _ImageItemState createState() => _ImageItemState();
 }
@@ -109,10 +108,7 @@ class _ImageItemState extends State<ImageItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.insert_comment),
-        onPressed: () => _AddComment(),
-      ),
+
       body: CustomScrollView(
         slivers: <Widget>[
           SliverPersistentHeader(
@@ -122,61 +118,13 @@ class _ImageItemState extends State<ImageItem> {
               minExtent: 250,
               maxExtent: 800,
               image: widget.image,
-              imagetag: widget.imagetag,
-            ),
-          ),
-          SliverFixedExtentList(
-            itemExtent: 100.0,
-            delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                // TODO have a stream builder for comments
-
-                return Column(
-                  children: <Widget>[
-                    Divider(),
-                    ListTile(
-                      title: Text("Name of user who posted"),
-                      subtitle: Text(
-                        "The comment",
-                        style: TextStyle(color: Colors.grey[100 * (index % 9)]),
-                      ),
-                      leading: Icon(Icons.perm_identity),
-                    ),
-                  ],
-                );
-              },
             ),
           ),
         ],
       ),
     );
   }
-
-  Widget _buildComments(BuildContext context) {
-    return StreamBuilder(
-        stream: dbconn
-            .collection("Posts")
-            .orderBy('uploadedOn', descending: true)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return CircularProgressIndicator();
-          print("Snapshot data : ${snapshot.data.toString()}");
-
-          return ListView.builder(
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) =>
-                _BuildCommentsTemplate(context, snapshot.data.documents[index]),
-          );
-        });
-  }
-
-  Widget _BuildCommentsTemplate(
-      BuildContext context, DocumentSnapshot document) {
-    return ListTile(
-      leading: Text(document['downvotes']),
-      subtitle: Text(document['upvotes']),
-    );
-  }
+  
 }
 
 // TODO classic how classes work

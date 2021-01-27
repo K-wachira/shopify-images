@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shopify_image/services/screens/image_item.dart';
+import 'package:shopify_image/services/screens/pop_up_menu.dart';
+import 'package:shopify_image/services/shared%20widgets/spinn_kit.dart';
 import 'multi_image.dart';
 
 class GalleryPageOne extends StatefulWidget {
@@ -19,24 +21,6 @@ class GalleryPageOne extends StatefulWidget {
 }
 
 class _GalleryPageOneState extends State<GalleryPageOne> {
-  // final List<StaggeredTile> _staggeredTiles = const <StaggeredTile>[
-  //   const StaggeredTile.count(2, 2),
-  //   const StaggeredTile.count(1, 1),
-  //   const StaggeredTile.count(1, 1),
-  //   const StaggeredTile.count(1, 1),
-  //   const StaggeredTile.count(1, 1),
-  //   const StaggeredTile.count(1, 1),
-  //   const StaggeredTile.count(1, 1),
-  //   const StaggeredTile.count(1, 1),
-  //   const StaggeredTile.count(1, 1),
-  //   const StaggeredTile.count(1, 1),
-  //   const StaggeredTile.count(2, 2),
-  //   const StaggeredTile.count(1, 1),
-  //   const StaggeredTile.count(1, 1),
-  //   const StaggeredTile.count(2, 1),
-  //   const StaggeredTile.count(1, 2),
-  //   const StaggeredTile.count(1, 1),
-  // ];
 
   final CollectionReference collectionReference=FirebaseFirestore.instance.collection("Posts");
   List<DocumentSnapshot> imagez;
@@ -89,7 +73,7 @@ class _GalleryPageOneState extends State<GalleryPageOne> {
       body: StreamBuilder(
         stream: dbconn.collection("Posts").snapshots(),
         builder: (context, snapshot){
-          if (!snapshot.hasData) return CircularProgressIndicator();
+          if (!snapshot.hasData) return Center(child: loading_widget());
           print("Snapshot data : ${snapshot.data.toString()}");
           return ListView.builder(
            itemCount: snapshot.data.docs.length,
@@ -101,21 +85,6 @@ class _GalleryPageOneState extends State<GalleryPageOne> {
     );
   }
 
-
-
-  Widget _buildstaggered (BuildContext context, DocumentSnapshot document){
-   print(document['Url'][0]);
-    return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage("https://imgur.com/iar2s9Z.pngc"),
-            fit: BoxFit.cover,
-          ),
-          borderRadius: BorderRadius.circular(10.0)),
-
-    );
-
-  }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     return Column(
@@ -131,21 +100,8 @@ class _GalleryPageOneState extends State<GalleryPageOne> {
               Row(
                 // comment section
                 children: <Widget>[
-                  new Container(
-                    height: 40.0,
-                    width: 40.0,
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image: new NetworkImage(document['Url'][0])),
-                    ),
-                  ),
-                  new SizedBox(
-                    width: 10.0,
-                  ),
                   new Text(
-                    "#memehashtag",
+                    "#Caption",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -155,7 +111,7 @@ class _GalleryPageOneState extends State<GalleryPageOne> {
                 icon: Icon(Icons.more_vert),
                 onPressed: () => showDialog(
                   context: context,
-                  builder: (context) => Container(),
+                  builder: (context) => pop_up_menu(),
                 ),
               )
             ],
@@ -164,32 +120,20 @@ class _GalleryPageOneState extends State<GalleryPageOne> {
         ),
         //         Main picture
         GestureDetector(
-//              brings up the image to focus on long press
-
-          onLongPress: () => showDialog(
-              context: context,
-              builder: (context) => Container()),
-
-//      Up voted the image on double tap TODO add animation on double tap
-
-//      On tap opened the image comment section and gives the user chance to comment
-
-          onTap: () {
-            print("(_buildItem(context, document))");
-            // pushing image id though this and use it to generate image document
+          onLongPress: (){
             Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        ImageItem(image: document['Im\geURL'], imagetag:  "#memehashtag")));
+                MaterialPageRoute(builder: (context) => ImageItem(image: document['Url'][0])));
+
           },
+
           child: CachedNetworkImage(
             fit: BoxFit.fitWidth,
-            height: 600,
+            height: 400,
             placeholder: (context, url) =>
-                Image.asset('assets/images/loading.gif'),
+                loading_widget(),
             placeholderFadeInDuration: Duration(milliseconds: 300),
-            imageUrl: document['ImageURL'],
+            imageUrl: document['Url'][0],
           ),
         ),
 
